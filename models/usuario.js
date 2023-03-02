@@ -38,7 +38,8 @@ const UsuarioSchema = Schema({
 //Es decir cuando se llama el toJSON esta funcion se ejecutara, usamos el operador ... para indicar que vamos a usar el resto de argumentos del modelo usuario, ese usuario que va despues del operador ... simplemente es el nombre que le damos a toda la coleccion de agumentos en vez de usuario hubieramos podido llamarlo pepito
 UsuarioSchema.methods.toJSON = function(){
     //esto generara una instancia pero con sus valores respectivos por ejemplo con el nombre correo password role etc
-    const{__v, password,...usuario } = this.toObject()
+    const{__v, password, _id,...usuario } = this.toObject()
+    usuario.uid = _id //aqui le cambiamos el nombre de _id a uid
     return usuario
 }
 

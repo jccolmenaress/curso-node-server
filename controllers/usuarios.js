@@ -82,12 +82,16 @@ const usuariosPost = async (req,res)=>{
 
 const usuariosDelete =  async (req,res)=>{
     const {id} = req.params
+    //aca ya se valido el token y por lo tanto podemos extraer el uid
+    const uid  = req.uid
     //fisicamente lo borramos pero no es recomendable ya que se pierde toda referencia de ese usuario por lo tanto es que usamos el campo estado lo cambiamos a false eso significa que ese usuario esta eliminado pero sin perder su referencia
     //const usuario = await Usuario.findByIdAndDelete(id);
 
     const usuario = await Usuario.findByIdAndUpdate(id,{estado:false})
+    //const usuarioAutenticado = req.usuario
     res.json({
-        usuario
+        usuario,
+        //usuarioAutenticado
     })
 }
 

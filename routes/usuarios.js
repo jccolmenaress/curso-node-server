@@ -2,11 +2,12 @@ const {Router } = require('express')
 const { check } = require('express-validator')
 const { usuariosGet, usuariosPut, usuariosPost, usuariosPatch, usuariosDelete } = require('../controllers/usuarios')
 const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers/db-validators')
+// const { validarJWT } = require('../middlewares/validad-jwt')
+ //Traemos el middleware que creamos manualmente dentro de la carpeta de middlwares el cual valida todos los campos del usuaio
+// const {validarCampos} = require("../middlewares/validad-campos")
+// const { esAdminRole, tieneRole } = require('../middlewares/validar-roles')
 
-
-
-//Traemos el middleware que creamos manualmente dentro de la carpeta de middlwares el cual valida todos los campos del usuaio
-const {validarCampos} = require("../middlewares/validad-campos")
+const {validarCampos, validarJWT, esAdminRole, tieneRole} = require('../middlewares')
 
 //A este router le vamos a configurar todas las rutas
 const router = Router()//llamo la funcion de Router
@@ -31,6 +32,12 @@ router.post('/',[
     validarCampos
 ], usuariosPost)
 router.delete('/:id',[
+    //el siguiente middleware es para validar el jwt, y deberia ser el primero en ejecutarse
+    validarJWT,
+    //valida si el usuario tiene rol de admin
+    //esAdminRole, lo comentamos por que obliga al usuario a tener rol de admin para poder borrar usuarios
+    //la idea es crear un middleware que valide que tipo de rol tiene y acorde a eso revisar si tiene permisos para borrar usuarios
+    tieneRole('ADMIN_ROLE','VENTAS_ROLE'),
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom(existeUsuarioPorId),
     validarCampos
